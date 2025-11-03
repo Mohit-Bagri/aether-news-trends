@@ -17,7 +17,7 @@ if not processed_path.exists():
 df = pd.read_csv(processed_path)
 
 st.title("🧠 Aether - AI News Trend Analyzer")
-st.markdown("Explore trending topics, sources, and insights from news articles.")
+st.markdown("Explore trending topics, sources and insights from news articles.")
 
 # -----------------------------
 # Sidebar Filters
