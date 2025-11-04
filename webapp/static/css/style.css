@@ -1,0 +1,195 @@
+/* 🌙 General Page Setup */
+body {
+  background: #f8fafc;
+  font-family: "Inter", "Segoe UI", Roboto, sans-serif;
+  color: #111827;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+/* 🧠 Chat Container */
+.chat-container {
+  background: #ffffff;
+  width: 480px;
+  max-height: 85vh;
+  border-radius: 1.5rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: fadeIn 0.6s ease;
+}
+
+.chat-container h1 {
+  font-size: 1.8rem;
+  color: #2563eb;
+  text-align: center;
+  margin-top: 1.2rem;
+  margin-bottom: 0.4rem;
+}
+
+.chat-container p {
+  text-align: center;
+  color: #6b7280;
+  margin-bottom: 0.8rem;
+}
+
+/* 💬 Chat Box */
+.chat-box {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  background: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+  scroll-behavior: smooth;
+}
+
+/* 🧍 User + Bot Messages */
+.user-msg,
+.bot-msg {
+  padding: 0.8rem 1rem;
+  border-radius: 1rem;
+  margin: 0.4rem 0;
+  width: fit-content;
+  max-width: 85%;
+  line-height: 1.4;
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+.user-msg {
+  background: #dbeafe;
+  color: #111827;
+  align-self: flex-end;
+  margin-left: auto;
+}
+
+.bot-msg {
+  background: #f3f4f6;
+  color: #111827;
+  align-self: flex-start;
+}
+
+/* 🚨 Error Message */
+.error {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* 🧩 Section Cards (News, YouTube, Reddit) */
+.section-card {
+  background: white;
+  border-radius: 0.8rem;
+  padding: 0.75rem 1rem;
+  margin-top: 0.8rem;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.section-card h4 {
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+  color: #374151;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 0.25rem;
+}
+
+.section-card ul {
+  list-style-type: disc;
+  padding-left: 1.2rem;
+  margin: 0;
+}
+
+.section-card li {
+  margin: 0.3rem 0;
+}
+
+.section-card a {
+  color: #2563eb;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.section-card a:hover {
+  color: #1e40af;
+  text-decoration: underline;
+}
+
+/* 🧠 Chat Input */
+.chat-input {
+  display: flex;
+  padding: 0.8rem;
+  border-top: 1px solid #e5e7eb;
+  background: #fff;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 0.7rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 9999px;
+  outline: none;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.chat-input input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+.chat-input button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 9999px;
+  padding: 0 1.4rem;
+  margin-left: 0.6rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.chat-input button:hover {
+  background: #1e40af;
+}
+
+/* ✨ Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* 📱 Responsive */
+@media (max-width: 520px) {
+  .chat-container {
+    width: 92%;
+    height: 90vh;
+  }
+  .chat-input button {
+    padding: 0 1rem;
+  }
+  .chat-input input {
+    font-size: 0.9rem;
+  }
+}

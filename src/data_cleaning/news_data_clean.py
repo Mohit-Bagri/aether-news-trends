@@ -1,35 +1,56 @@
 import pandas as pd
-import json
 from pathlib import Path
 
-RAW_DIR = Path("data/raw")
-PROCESSED_DIR = Path("data/processed")
-PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
+def clean_news_data(input_path, custom_output=None):
+    """
+    Cleans the raw news data:
+      - Loads JSON or CSV
+      - Removes duplicates, NaN, and empty text
+      - Saves a cleaned CSV file (default or custom_output)
+    """
 
-def clean_news_data(topic="AI"):
-    """Clean the latest raw news file for the given topic."""
-    files = sorted(RAW_DIR.glob(f"news_{topic}_*.json"))
-    if not files:
-        raise FileNotFoundError(f"No raw data found for topic '{topic}'")
+    df = pd.read_json(input_path) if str(input_path).endswith(".json") else pd.read_csv(input_path)
 
-    latest_file = files[-1]
-    with open(latest_file, "r", encoding="utf-8") as f:
-        data = json.load(f)
+    # Normalize column names
+    df.columns = df.columns.str.lower()
 
-    articles = data.get("articles", [])
-    df = pd.DataFrame(articles)
+    # Standardize text fields
+    if "title" not in df.columns:
+        df["title"] = ""
 
-    # Basic cleanup
-    df = df[["source", "author", "title", "description", "url", "publishedAt"]]
-    df["source"] = df["source"].apply(lambda x: x["name"] if isinstance(x, dict) else x)
-    df.drop_duplicates(subset=["title"], inplace=True)
-    df.dropna(subset=["title", "url"], inplace=True)
-    df["title"] = df["title"].str.strip()
-    df["description"] = df["description"].str.strip()
-    df["publishedAt"] = pd.to_datetime(df["publishedAt"]).dt.date
+    # Try to get text content
+    if "description" in df.columns:
+        df["text"] = df["description"]
+    elif "content" in df.columns:
+        df["text"] = df["content"]
+    elif "summary" in df.columns:
+        df["text"] = df["summary"]
+    else:
+        df["text"] = ""
 
-    # Save cleaned version
-    output_file = PROCESSED_DIR / f"cleaned_news_{topic.lower().replace(' ', '_')}.csv"
-    df.to_csv(output_file, index=False)
-    print(f"✅ Cleaned data saved to {output_file}")
-    return output_file
+    # Drop duplicates and NaNs
+    df.drop_duplicates(subset=["title", "text"], inplace=True)
+    df.dropna(subset=["title", "text"], inplace=True)
+
+    # Trim whitespace and clean strings
+    df["title"] = df["title"].astype(str).str.strip()
+    df["text"] = df["text"].astype(str).str.strip()
+
+    # Filter out junk rows (like "nan" or too short)
+    df = df[df["title"].str.len() > 5]
+    df = df[df["text"].str.len() > 10]
+
+    # Decide output path
+    if custom_output:
+        output_path = Path(custom_output)
+    else:
+        output_path = Path(input_path).with_name("cleaned_" + Path(input_path).stem + ".csv")
+
+    # Ensure directory exists
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    # Save cleaned file
+    df.to_csv(output_path, index=False)
+
+    print(f"🧹 Cleaned news data saved to: {output_path} ({len(df)} rows)")
+    return output_path

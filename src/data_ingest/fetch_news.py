@@ -1,89 +1,66 @@
-"""
-Fetch news articles from NewsAPI and save raw JSON to data/raw/news_<timestamp>.json
-Now compatible with Streamlit user input (via fetch_and_save_news function)
-"""
-
 import os
-import json
-import time
-import logging
+import requests
+import pandas as pd
 from datetime import datetime
 from pathlib import Path
-import requests
 from dotenv import load_dotenv
 
-# 1️⃣ Load your .env file
 load_dotenv()
-API_KEY = os.getenv("NEWSAPI_KEY")
+NEWS_API_KEY = os.getenv("NEWS_API_KEY")
 
-if not API_KEY:
-    raise ValueError("NEWSAPI_KEY not found! Add it to the .env file.")
-
-# 2️⃣ Config paths
-BASE_URL = "https://newsapi.org/v2/everything"
-RAW_DIR = Path("data/raw")
-RAW_DIR.mkdir(parents=True, exist_ok=True)
-
-# 3️⃣ Setup logging
-LOGS_DIR = Path("logs")
-LOGS_DIR.mkdir(exist_ok=True)
-logging.basicConfig(
-    filename=LOGS_DIR / "fetch_news.log",
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s"
-)
-
-def fetch_news(query="AI", pages=1, page_size=50):
+def fetch_news(topic: str, page_size: int = 50):
     """
-    Fetch news articles about a topic and save them to data/raw/
-    Returns: Path of saved JSON file
+    Fetch top news articles for a given topic using NewsAPI.
+    Saves data as CSV and returns file path.
     """
-    headers = {"Authorization": API_KEY}
-    all_articles = []
-    logging.info(f"Starting fetch for query: {query}")
+    if not NEWS_API_KEY:
+        raise ValueError("❌ Missing NEWSAPI_KEY in .env")
 
-    for page in range(1, pages + 1):
-        params = {
-            "q": query,
-            "language": "en",
-            "pageSize": page_size,
-            "page": page
-        }
+    print(f"📰 Fetching fresh news for topic: {topic} ...")
 
-        response = requests.get(BASE_URL, headers=headers, params=params)
+    url = "https://newsapi.org/v2/everything"
+    params = {
+        "q": topic,
+        "language": "en",
+        "pageSize": page_size,
+        "sortBy": "relevancy",
+        "apiKey": NEWS_API_KEY,
+    }
 
-        if response.status_code == 200:
-            data = response.json()
-            articles = data.get("articles", [])
-            all_articles.extend(articles)
-            logging.info(f"Fetched {len(articles)} articles on page {page}")
-            time.sleep(1)
-        else:
-            logging.warning(f"Error {response.status_code}: {response.text}")
-            break
+    response = requests.get(url, params=params)
+    data = response.json()
 
-    # 4️⃣ Save to JSON
-    filename = RAW_DIR / f"news_{query}_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.json"
-    with open(filename, "w", encoding="utf-8") as f:
-        json.dump({"articles": all_articles}, f, ensure_ascii=False, indent=2)
+    if data.get("status") != "ok":
+        print(f"⚠️ Error fetching news: {data.get('message')}")
+        return None
 
-    logging.info(f"Saved {len(all_articles)} articles → {filename}")
-    print(f"Saved {len(all_articles)} articles to {filename}")
+    articles = data.get("articles", [])
+    if not articles:
+        print(f"⚠️ No news found for {topic}")
+        return None
 
-    return filename
+    records = []
+    for a in articles:
+        records.append({
+            "title": a.get("title", ""),
+            "text": a.get("description", ""),
+            "url": a.get("url", ""),
+            "publishedAt": a.get("publishedAt", ""),
+            "source": a.get("source", {}).get("name", ""),
+            "source_type": "news"
+        })
+
+    df = pd.DataFrame(records)
+
+    # Save file
+    output_path = Path(f"data/raw/cleaned_news_{topic.lower().replace(' ', '_')}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv")
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    df.to_csv(output_path, index=False)
+
+    print(f"✅ Cleaned news data saved to: {output_path} ({len(df)} rows)")
+    return output_path
 
 
-def fetch_and_save_news(query=None):
-    """
-    Wrapper for Streamlit integration.
-    If query is None, it will ask user input (for local test).
-    """
-    if query is None:
-        query = input("Enter a topic: ").strip() or "AI"
-    print(f"🔍 Fetching news for: {query}")
-    return fetch_news(query)
-
-
-# ✅ Local run
+# Debug run
 if __name__ == "__main__":
-    fetch_and_save_news()
+    fetch_news("AI News")
