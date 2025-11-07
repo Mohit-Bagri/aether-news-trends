@@ -1,25 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>💬 Aether Chatbot</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Aether — Your AI & Tech Companion</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-  <div class="chat-container">
-    <h1>💬 <span class="title">Aether Chatbot</span></h1>
-    <p class="subtitle">Your personal AI & Tech Companion</p>
+  <div class="page-bg" aria-hidden="true"></div>
 
-    <div id="chatBox" class="chat-box">
-      <div class="bot-msg">
-        👋 Hi, I’m Aether! Ask me about AI, ML, or Tech news.
-      </div>
+  <div class="app-center">
+    <div class="chat-wrapper" role="application" aria-label="Aether Chat">
+      <header class="chat-header">
+        <div class="logo" aria-hidden="true">💬</div>
+        <h1>Aether</h1>
+        <div class="tagline">Your personal AI & Tech Companion</div>
+      </header>
+
+      <main id="chatBox" class="chat-box" role="log" aria-live="polite"></main>
+
+      <form id="chatForm" class="chat-form">
+  <input id="userInput" type="text" placeholder="Ask about any topic..." autocomplete="off" />
+  <button id="micBtn" type="button" class="mic-btn" title="Speak"></button>
+  <button id="sendBtn" type="submit" class="send-btn" title="Send"></button>
+</form>
+
     </div>
-
-    <form id="chatForm" class="chat-input">
-      <input id="userInput" type="text" placeholder="Type your question..." autocomplete="off" required />
-      <button type="submit">Send</button>
-    </form>
   </div>
 
   <script src="{{ url_for('static', filename='js/script.js') }}"></script>

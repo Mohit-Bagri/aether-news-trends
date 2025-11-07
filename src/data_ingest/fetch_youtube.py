@@ -1,74 +1,104 @@
-import os
-import requests
-import pandas as pd
-from datetime import datetime
-from pathlib import Path
+import os, requests, pandas as pd
+from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
 
-# Load environment variables
 load_dotenv()
 YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
 
+def _iso8601_duration_to_seconds(dur):
+    if not dur or not dur.startswith("PT"): return 0
+    h = m = s = 0; num = ""
+    for ch in dur[2:]:
+        if ch.isdigit(): num += ch
+        else:
+            if ch == "H": h = int(num or 0)
+            if ch == "M": m = int(num or 0)
+            if ch == "S": s = int(num or 0)
+            num = ""
+    return h*3600 + m*60 + s
 
-def fetch_youtube_videos(topic: str, max_results: int = 5):
-    """
-    Fetch top YouTube videos for a given topic using YouTube Data API v3.
-    Saves a CSV and returns the file path.
-    """
+def fetch_youtube_videos(query="news", max_results=20):
+    print(f"🎥 YouTube: Fetching videos for '{query}'...")
+
     if not YOUTUBE_API_KEY:
-        raise ValueError("❌ Missing YOUTUBE_API_KEY in .env file")
+        print("❌ Missing YOUTUBE_API_KEY")
+        return pd.DataFrame()
 
-    url = "https://www.googleapis.com/youtube/v3/search"
+    now = datetime.now(timezone.utc)
+    week_ago = now - timedelta(days=7)
+
+    def search_youtube(q, duration):
+        params = {
+            "q": q, "type": "video", "part": "snippet",
+            "maxResults": max_results, "order": "relevance",
+            "publishedAfter": week_ago.isoformat(),
+            "videoDuration": duration, "relevanceLanguage": "en",
+            "regionCode": "US", "key": YOUTUBE_API_KEY
+        }
+
+        for attempt in range(3):
+            try:
+                r = requests.get("https://www.googleapis.com/youtube/v3/search", params=params, timeout=10)
+                r.raise_for_status()
+                data = r.json()
+                return [i["id"]["videoId"] for i in data.get("items", [])]
+            except:
+                print(f"⚠️ YT search retry {attempt+1}/3...")
+
+        print("❌ YouTube search failed after retries")
+        return []
+
+    ids = search_youtube(query, "medium") or search_youtube(query, "long") or search_youtube(query, "any")
+    if not ids:
+        print("⚠️ YouTube: No results")
+        return pd.DataFrame()
+
     params = {
-        "part": "snippet",
-        "q": topic,
-        "type": "video",
-        "maxResults": max_results,
-        "key": YOUTUBE_API_KEY,
-        "order": "relevance",
-        "regionCode": "IN"
+        "part": "statistics,snippet,contentDetails",
+        "id": ",".join(ids),
+        "key": YOUTUBE_API_KEY
     }
 
-    print(f"🎥 Fetching YouTube videos for topic: {topic} ...")
-    response = requests.get(url, params=params)
-
-    if response.status_code != 200:
-        print(f"❌ YouTube API HTTP {response.status_code}: {response.text}")
-        return None
-
-    data = response.json()
-    if "error" in data:
-        print(f"❌ YouTube API error: {data['error']['message']}")
-        return None
-
-    items = data.get("items", [])
-    if not items:
-        print(f"⚠️ No YouTube videos found for {topic}")
-        print("🔍 Debug:", data)
-        return None
+    for attempt in range(3):
+        try:
+            r = requests.get("https://www.googleapis.com/youtube/v3/videos", params=params, timeout=10)
+            r.raise_for_status()
+            data = r.json()
+            break
+        except:
+            print(f"⚠️ YT details retry {attempt+1}/3...")
+    else:
+        print("❌ YT details failed")
+        return pd.DataFrame()
 
     videos = []
-    for v in items:
-        snippet = v["snippet"]
-        vid_id = v["id"]["videoId"]
+    for item in data.get("items", []):
+        sn = item.get("snippet", {})
+        st = item.get("statistics", {})
+        cd = item.get("contentDetails", {})
+
+        title = sn.get("title", "")
+        if not all(ord(c) < 128 for c in title): continue
+
+        pub = sn.get("publishedAt")
+        if not pub: continue
+        pub = datetime.fromisoformat(pub.replace("Z", "+00:00"))
+        if pub < week_ago: continue
+
+        if _iso8601_duration_to_seconds(cd.get("duration", "")) < 60: continue
+
         videos.append({
-            "title": snippet["title"],
-            "text": snippet["description"],
-            "channel": snippet["channelTitle"],
-            "url": f"https://www.youtube.com/watch?v={vid_id}",
-            "publishedAt": snippet["publishedAt"],
-            "source": "youtube"
+            "title": title,
+            "channel": sn.get("channelTitle"),
+            "publishedAt": pub,
+            "views": int(st.get("viewCount", 0)),
+            "url": f"https://www.youtube.com/watch?v={item['id']}"
         })
 
-    df = pd.DataFrame(videos)
-    output_path = Path(f"data/processed/youtube_{topic.lower().replace(' ', '_')}.csv")
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    df.to_csv(output_path, index=False)
+    if not videos: 
+        print("⚠️ Filtered out all YT videos")
+        return pd.DataFrame()
 
-    print(f"✅ Saved {len(df)} YouTube videos → {output_path}")
-    return output_path
-
-
-# Debug usage (only runs when you execute this file directly)
-if __name__ == "__main__":
-    fetch_youtube_videos("AI news")
+    df = pd.DataFrame(videos).sort_values(by="views", ascending=False).reset_index(drop=True)
+    print(f"✅ YouTube: {len(df)} videos")
+    return df

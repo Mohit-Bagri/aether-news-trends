@@ -1,49 +1,56 @@
-import requests
-import pandas as pd
-from pathlib import Path
-import time
+import requests, pandas as pd, re
+from datetime import datetime, timedelta, timezone
 
-def fetch_reddit_posts(topic="AI"):
-    print(f"💬 Fetching Reddit posts for topic: {topic} ...")
+def fetch_reddit_posts(topic="news", limit=30):
+    print(f"🧵 Reddit: Fetching posts for '{topic}'...")
 
-    url = f"https://www.reddit.com/search.json?q={topic}&limit=10&sort=hot"
-    headers = {"User-Agent": "Mozilla/5.0"}
-    output_path = Path(f"data/processed/reddit_{topic.lower().replace(' ', '_')}.csv")
-    output_path.parent.mkdir(parents=True, exist_ok=True)
+    url = f"https://www.reddit.com/search.json?q={topic}&sort=top&t=week&limit={limit}"
+    headers = {"User-agent": "AetherBot/2.2"}
 
-    for attempt in range(3):
-        try:
-            res = requests.get(url, headers=headers, timeout=10)
-            if res.status_code != 200:
-                print(f"❌ Reddit API HTTP {res.status_code}: {res.text}")
-                time.sleep(2)
-                continue
+    try:
+        r = requests.get(url, headers=headers, timeout=10)
+        if r.status_code == 429:
+            print("⛔ Reddit rate limit")
+            return pd.DataFrame()
+        r.raise_for_status()
+        data = r.json()
+    except Exception as e:
+        print(f"❌ Reddit failed: {e}")
+        return pd.DataFrame()
 
-            data = res.json()
-            posts = data.get("data", {}).get("children", [])
-            if not posts:
-                print("⚠️ No Reddit data fetched.")
-                return None
+    now = datetime.now(timezone.utc)
+    week_ago = now - timedelta(days=7)
+    posts = []
 
-            records = []
-            for p in posts:
-                d = p["data"]
-                records.append({
-                    "title": d.get("title"),
-                    "url": f"https://reddit.com{d.get('permalink')}",
-                    "score": d.get("score"),
-                    "subreddit": d.get("subreddit"),
-                    "source_type": "reddit"
-                })
+    for post in data.get("data", {}).get("children", []):
+        p = post.get("data", {})
+        title = p.get("title", "").strip()
+        if not title: continue
+        if len(title.split()) < 3: continue  # remove memes
 
-            df = pd.DataFrame(records)
-            df.to_csv(output_path, index=False)
-            print(f"✅ Saved {len(df)} Reddit posts → {output_path}")
-            return str(output_path)
+        created = datetime.fromtimestamp(p.get("created_utc", 0), tz=timezone.utc)
+        if created < week_ago: continue
 
-        except Exception as e:
-            print(f"⚠️ Reddit fetch failed: {e}")
-            time.sleep(2)
+        upvotes = int(p.get("score", 0))
+        hours = max(1, int((now - created).total_seconds() // 3600))
+        freshness = max(1, 168 - hours)
 
-    print("⚠️ No Reddit data fetched after 3 retries.")
-    return None
+        score = upvotes*0.9 + freshness*0.1
+
+        posts.append({
+            "title": title,
+            "url": f"https://reddit.com{p.get('permalink','')}",
+            "subreddit": p.get("subreddit") or "unknown",
+            "upvotes": upvotes,
+            "publishedAt": created,
+            "hours_ago": hours,
+            "score": score
+        })
+
+    if not posts:
+        print("⚠️ Reddit: no posts")
+        return pd.DataFrame()
+
+    df = pd.DataFrame(posts).sort_values(by="score", ascending=False)
+    print(f"✅ Reddit: {len(df)} posts")
+    return df[["title","url","subreddit","upvotes","publishedAt","hours_ago"]]
