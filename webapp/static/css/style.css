@@ -1,4 +1,4 @@
-/* === AETHER COSMIC THEME (FINAL POLISHED RELEASE v2.0) === */
+/* === AETHER COSMIC THEME (FINAL v2.5 RESTORED) === */
 :root {
   --accent: #7d4cff;
   --accent-2: #9c6eff;
@@ -6,7 +6,6 @@
   --chat-width: 820px;
 }
 
-/* === BASE === */
 * { box-sizing: border-box; }
 body {
   margin: 0;
@@ -29,7 +28,6 @@ body {
 
 /* === CHAT WRAPPER === */
 .app-center {
-  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -46,8 +44,6 @@ body {
   box-shadow: 0 0 30px rgba(125,76,255,0.12), 0 30px 60px rgba(0,0,0,0.6);
   backdrop-filter: blur(22px) saturate(150%);
   overflow: hidden;
-  position: relative;
-  transition: all .25s ease;
 }
 
 /* === HEADER === */
@@ -56,8 +52,15 @@ body {
   padding: 16px 18px;
   border-bottom: 1px solid rgba(255,255,255,0.05);
 }
-.chat-header h1 { font-size: 26px; margin: 0; font-weight: 700; }
-.chat-header .tagline { font-size: 13px; color: var(--muted); }
+.chat-header h1 {
+  font-size: 26px;
+  margin: 6px 0 2px;
+  font-weight: 700;
+}
+.chat-header .tagline {
+  font-size: 13px;
+  color: var(--muted);
+}
 
 /* === CHAT BOX === */
 .chat-box {
@@ -75,17 +78,16 @@ body {
   border-radius: 8px;
 }
 
-/* === CHAT BUBBLES === */
+/* === USER / BOT MESSAGES === */
 .user-msg, .bot-msg {
   max-width: 75%;
   padding: 12px 16px;
   line-height: 1.45;
   word-break: break-word;
-  position: relative;
   border-radius: 18px;
   opacity: 0;
   transform: translateY(12px) scale(0.98);
-  transition: opacity 420ms cubic-bezier(.2,1,.25,1), transform 420ms cubic-bezier(.2,1,.25,1);
+  transition: opacity .4s cubic-bezier(.2,1,.25,1), transform .4s cubic-bezier(.2,1,.25,1);
 }
 .user-msg.show, .bot-msg.show {
   opacity: 1;
@@ -105,7 +107,7 @@ body {
   border-top-left-radius: 4px;
 }
 
-/* === TYPING BUBBLE === */
+/* === TYPING DOTS === */
 .typing-bubble {
   background: rgba(255,255,255,0.04);
   border-radius: 18px;
@@ -117,14 +119,8 @@ body {
   box-shadow: 0 0 10px rgba(125,76,255,0.15);
 }
 @keyframes bubblePulse {
-  0%, 100% {
-    box-shadow: 0 0 10px rgba(125,76,255,0.15);
-    background: rgba(255,255,255,0.04);
-  }
-  50% {
-    box-shadow: 0 0 16px rgba(156,110,255,0.4);
-    background: rgba(255,255,255,0.06);
-  }
+  0%,100%{box-shadow:0 0 10px rgba(125,76,255,0.15);}
+  50%{box-shadow:0 0 18px rgba(156,110,255,0.45);}
 }
 .typing-dots {
   display: flex;
@@ -134,128 +130,89 @@ body {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #cbb9ff;
-  box-shadow: 0 0 6px rgba(189,166,255,0.7);
-  animation: dotPulse 1.3s infinite ease-in-out;
+  background: #b9cfff;
+  box-shadow: 0 0 8px rgba(125,110,255,0.9);
+  animation: dotGlow 1.2s infinite ease-in-out;
 }
-.typing-dots span:nth-child(2){ animation-delay: .2s; }
-.typing-dots span:nth-child(3){ animation-delay: .4s; }
-@keyframes dotPulse {
-  0%, 80%, 100% { opacity: 0.45; transform: scale(0.75); }
-  40% { opacity: 1; transform: scale(1); }
+.typing-dots span:nth-child(2){animation-delay:.2s;}
+.typing-dots span:nth-child(3){animation-delay:.4s;}
+@keyframes dotGlow {
+  0%,100%{opacity:.45;transform:scale(.8);}
+  50%{opacity:1;transform:scale(1.25);}
+}
+.typing-bubble.fade-out {
+  opacity: 0;
+  transform: scale(.9);
+  transition: opacity .25s ease, transform .25s ease;
 }
 
-/* === CHAT FORM === */
+/* === INPUT AREA === */
 .chat-form {
-  display: flex;
-  gap: 10px;
-  padding: 14px 18px;
   border-top: 1px solid rgba(255,255,255,0.03);
   background: rgba(0,0,0,0.4);
+  padding: 14px 18px;
 }
-.chat-form input {
-  flex: 1;
-  padding: 14px 16px;
+.chat-input-container {
+  display: flex;
+  align-items: center;
+  background: rgba(30,10,50,0.7);
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.06);
-  background: rgba(255,255,255,0.02);
+  padding: 0.5rem 0.75rem;
+  gap: 0.5rem;
+}
+.chat-input-container input {
+  flex: 1;
+  background: transparent;
+  border: none;
   color: #fff;
-  font-size: 15px;
+  font-size: 0.95rem;
+  outline: none;
+  padding: 0.6rem 0.4rem;
 }
 
-/* === MIC & SEND BUTTONS === */
-.mic-btn, .send-btn {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
+/* === BUTTONS === */
+.chat-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
   color: #cbb9ff;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.25s ease;
-  box-shadow: 0 0 10px rgba(125,76,255,0.1);
 }
-.mic-btn svg, .send-btn svg {
-  width: 26px;
-  height: 26px;
-  transition: transform 0.3s ease;
-}
-.mic-btn:hover, .send-btn:hover {
+.chat-btn svg { width: 22px; height: 22px; }
+.chat-btn:hover {
   background: rgba(125,76,255,0.1);
-  box-shadow: 0 0 18px rgba(125,76,255,0.25);
+  box-shadow: 0 0 16px rgba(125,76,255,0.25);
   transform: translateY(-2px);
 }
-.mic-btn:active svg, .send-btn:active svg {
-  transform: scale(0.9);
-}
 
-/* === Mic Listening Animation === */
+/* === MIC LISTENING === */
 .mic-btn.listening {
-  background: radial-gradient(circle at 50% 50%, rgba(255,76,76,0.4), rgba(125,76,255,0.15));
-  box-shadow: 0 0 30px rgba(255,76,76,0.6);
-  animation: micWave 1.5s ease-in-out infinite;
+  background: radial-gradient(circle at center, rgba(255,76,76,0.55), rgba(125,76,255,0.25));
+  box-shadow: 0 0 30px rgba(255,76,76,0.8);
+  animation: micPulse 1.5s ease-in-out infinite;
 }
-@keyframes micWave {
-  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 6px rgba(255,76,76,0.8)); }
-  50% { transform: scale(1.2); filter: drop-shadow(0 0 14px rgba(255,76,76,1)); }
-}
-
-/* === Stop (Pause) Button === */
-.stop-btn {
-  align-self: center;
-  margin-top: 10px;
-  background: rgba(255, 76, 76, 0.15);
-  color: #ff7b7b;
-  border: 1px solid rgba(255,76,76,0.3);
-  padding: 6px 14px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 13px;
-  transition: all 0.25s ease;
-}
-.stop-btn:hover {
-  background: rgba(255, 76, 76, 0.25);
-  box-shadow: 0 0 10px rgba(255, 76, 76, 0.3);
+@keyframes micPulse {
+  0%,100%{transform:scale(1);filter:drop-shadow(0 0 6px rgba(255,76,76,0.9));}
+  50%{transform:scale(1.25);filter:drop-shadow(0 0 16px rgba(255,76,76,1));}
 }
 
-/* === Send “Launch” Animation === */
-.send-btn.launching svg {
-  animation: flyAway 0.7s cubic-bezier(.25,1,.5,1);
+/* === STOP BUTTON PULSE === */
+.send-btn.stop-active svg {
+  animation: pulseStopBtn 1.4s ease-in-out infinite;
 }
-@keyframes flyAway {
-  0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; }
-  40% { transform: translateY(-8px) scale(1.1) rotate(-10deg); }
-  100% { transform: translate(45px,-45px) scale(0.9) rotate(20deg); opacity: 0; }
-}
-
-/* === SECTION HEADERS === */
-.section-header {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin: 12px 0 8px;
-  font-weight: 600;
-  font-size: 15px;
-  color: #eae6ff;
-}
-.section-header span {
-  display: inline-block;
-  line-height: 1;
-  transform: translateY(1px);
+@keyframes pulseStopBtn {
+  0%,100%{filter:drop-shadow(0 0 6px rgba(255,76,76,0.85));transform:scale(1);}
+  50%{filter:drop-shadow(0 0 14px rgba(255,76,76,1));transform:scale(1.18);}
 }
 
-.section-header.news svg { color: #4CA8FF; }
-.section-header.youtube svg { color: #FF0000; }
-.section-header.reddit svg { color: #FF4500; }
-.section-header svg.animate-glow {
-  transform: scale(1.12);
-  filter: drop-shadow(0 0 6px currentColor);
-}
-
-/* === RESULTS === */
+/* === RESULT CARDS === */
 .results-container {
   display: flex;
   flex-direction: column;
@@ -280,169 +237,449 @@ body {
   opacity: 1;
   transform: translateY(0) scale(1);
 }
-.result-card:hover {
-  transform: translateY(-3px) scale(1.02);
-  background: rgba(255,255,255,0.05);
-  box-shadow: 0 0 16px 4px currentColor, 0 0 22px 6px rgba(255,255,255,0.04) inset;
+.result-card.news:hover {
+  color: rgba(0,140,255,0.35);
+  box-shadow: 0 0 22px rgba(80,160,255,0.55);
 }
-.result-card.news:hover { color: rgba(0,140,255,0.35); }
-.result-card.youtube:hover { color: rgba(255,0,0,0.35); }
-.result-card.reddit:hover { color: rgba(255,140,0,0.35); }
-
+.result-card.reddit:hover {
+  color: rgba(255,140,0,0.35);
+  box-shadow: 0 0 22px rgba(255,100,0,0.55);
+}
+.result-card.youtube:hover {
+  color: rgba(255,0,0,0.35);
+  box-shadow: 0 0 22px rgba(255,0,0,0.55);
+}
 .yt-thumb {
   width: 110px;
   height: 68px;
   border-radius: 8px;
   object-fit: cover;
-  flex-shrink: 0;
-  transition: all 0.3s ease;
-}
-.result-card:hover .yt-thumb {
-  transform: scale(1.015);
-  filter: brightness(1.07);
-  box-shadow: 0 0 10px currentColor;
 }
 
-/* === TEXT === */
-.result-title {
+/* === AETHER PREFIX GRADIENT — Cross-browser Safe === */
+.aether-prefix {
+  background: linear-gradient(90deg, #4CA8FF, #7DB9FF, #4CA8FF);
+  background-size: 200% 100%;
+  
+  /* ✅ Standard + vendor-prefixed for full compatibility */
+  background-clip: text;
+  -webkit-background-clip: text;
+  
+  -webkit-text-fill-color: transparent;
+  color: transparent; /* fallback for non-supporting browsers */
+
   font-weight: 600;
+  animation: prefixGlow 4s ease-in-out infinite;
+  text-shadow: 0 0 5px rgba(76, 168, 255, 0.25);
+}
+
+/* Smooth, breathing shimmer across the gradient */
+@keyframes prefixGlow {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+
+
+/* === SUMMARY === */
+.summary-card {
+  align-self: flex-start;
+  max-width: 78%;
+  background: rgba(125,76,255,0.08);
+  border: 1px solid rgba(125,76,255,0.18);
+  border-left: 3px solid #7d4cff;
+  border-radius: 14px;
+  padding: 14px 18px;
+  margin-top: 10px;
+  color: #f0eaff;
   font-size: 15px;
-  margin-bottom: 5px;
-  color: #e9e3ff;
+  line-height: 1.55;
+  box-shadow: 0 0 20px rgba(125,76,255,0.15);
+  animation: fadeUpSoft 0.5s ease forwards;
 }
-.result-meta {
-  font-size: 12.5px;
-  color: var(--muted);
-}
-.result-body {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
+@keyframes fadeUpSoft { to { opacity: 1; transform: translateY(0); } }
 
 /* === RESPONSIVE === */
 @media (max-width:900px) {
   :root { --chat-width: calc(100% - 48px); }
   .yt-thumb { width: 84px; height: 54px; }
 }
-/* === FIX: Consistent Section Icons === */
-.section-header svg {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-  vertical-align: middle;
-  fill: currentColor;
-  transition: transform 0.25s ease, filter 0.25s ease;
+/* === SECTION HOVER GLOWS & POP === */
+.result-card:hover {
+  transform: scale(1.02);
+  border-color: rgba(125,76,255,0.35);
+  box-shadow: 0 0 20px rgba(125,76,255,0.3);
+}
+.result-card.news:hover {
+  border-color: rgba(80,160,255,0.55);
+  box-shadow: 0 0 24px rgba(80,160,255,0.45);
+}
+.result-card.reddit:hover {
+  border-color: rgba(255,120,0,0.6);
+  box-shadow: 0 0 24px rgba(255,120,0,0.45);
+}
+.result-card.youtube:hover {
+  border-color: rgba(255,0,0,0.6);
+  box-shadow: 0 0 24px rgba(255,0,0,0.45);
+}
+.result-card.youtube:hover .yt-thumb {
+  box-shadow: 0 0 14px rgba(255,0,0,0.55);
+  transform: scale(1.03);
+  transition: all 0.3s ease;
 }
 
+/* === SECTION HEADER ICON POP === */
+.section-header span {
+  display: inline-block;
+  transition: transform 0.25s ease, filter 0.25s ease;
+}
+.section-header:hover span {
+  transform: scale(1.2);
+  filter: drop-shadow(0 0 10px rgba(255,255,255,0.6));
+}
 
-/* Center align the icon + title cleanly */
-.section-header {
+/* === FIX AETHER PREFIX BLUE PATCH === */
+.aether-prefix {
+  color: #7db9ff;
+  font-weight: 600;
+  text-shadow: 0 0 6px rgba(125,176,255,0.45);
+  letter-spacing: 0.3px;
+}
+
+/* === BRIEFING TOGGLE ANIM === */
+.summary-body {
+  overflow: hidden;
+  max-height: 600px;
+  transition: all 0.35s ease;
+}
+.summary-body.collapsed {
+  max-height: 0;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+/* === AETHER’S BRIEFING POLISH === */
+.summary-card {
+  background: rgba(130, 80, 255, 0.08);
+  border: 1px solid rgba(150, 120, 255, 0.15);
+  border-left: 3px solid #a680ff;
+  border-radius: 16px;
+  padding: 16px 20px;
+  box-shadow: 0 0 18px rgba(150, 100, 255, 0.15);
+  transition: all 0.4s ease;
+}
+.summary-header-bubble {
   display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: space-between;
   font-weight: 600;
-  font-size: 15px;
-  color: #eae6ff;
-  margin: 12px 0 8px;
+  margin-bottom: 8px;
 }
-
-/* More natural glow — slightly smoother */
-.section-header svg.animate-glow {
-  transform: scale(1.15);
-  filter: drop-shadow(0 0 8px currentColor);
+.summary-icon {
+  font-size: 1.2em;
+  margin-right: 6px;
 }
-/* === Icon Persistent Glow + Hover Boost === */
-.section-header.news svg {
-  color: #4CA8FF;
-  filter: drop-shadow(0 0 4px rgba(76, 168, 255, 0.35));
-}
-.section-header.youtube svg {
-  color: #FF0000;
-  filter: drop-shadow(0 0 4px rgba(255, 0, 0, 0.35));
-}
-.section-header.reddit svg {
-  color: #FF4500;
-  filter: drop-shadow(0 0 4px rgba(255, 69, 0, 0.35));
-}
-
-/* === Smooth Hover Glow Amplification === */
-.section-header:hover svg {
-  transform: scale(1.2);
-  filter: drop-shadow(0 0 12px currentColor);
-  transition: transform 0.25s ease, filter 0.25s ease;
-}
-
-
-/* === FIX: Stop Button Red Glow (Aether Style) === */
-.send-btn.stop-active svg {
-  animation: pulseStop 1.4s ease-in-out infinite;
-}
-@keyframes pulseStop {
-  0%, 100% {
-    filter: drop-shadow(0 0 6px rgba(255, 76, 76, 0.7));
-    transform: scale(1);
-  }
-  50% {
-    filter: drop-shadow(0 0 14px rgba(255, 76, 76, 1));
-    transform: scale(1.15);
-  }
-}
-
-/* === Paused Message (Soft Gray Bubble) === */
-.bot-msg.paused {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px dashed rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.65);
-  font-style: italic;
-  box-shadow: 0 0 12px rgba(125,76,255,0.1);
-}
-/* === Resume Button (Aether Style) === */
-.resume-btn {
-  align-self: flex-start;
-  margin: 6px 0 2px 4px;
-  background: rgba(125,76,255,0.08);
-  color: #d9ccff;
-  border: 1px solid rgba(125,76,255,0.25);
-  padding: 7px 14px;
+.summary-toggle {
+  background: rgba(150, 120, 255, 0.1);
+  border: 1px solid rgba(180, 160, 255, 0.3);
   border-radius: 10px;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  color: #d5c8ff;
   cursor: pointer;
-  font-size: 13px;
   transition: all 0.25s ease;
-  box-shadow: 0 0 12px rgba(125,76,255,0.12);
+}
+.summary-toggle:hover {
+  background: rgba(180, 150, 255, 0.25);
+  box-shadow: 0 0 10px rgba(160, 120, 255, 0.35);
+}
+.summary-body {
+  overflow: hidden;
+  max-height: 600px;
+  opacity: 1;
+  transition: all 0.45s ease;
+}
+.summary-body:not(.open) {
+  max-height: 0;
   opacity: 0;
-  animation: fadeIn 0.5s ease forwards;
+  padding-top: 0;
+  padding-bottom: 0;
 }
-.resume-btn:hover {
-  background: rgba(125,76,255,0.18);
-  box-shadow: 0 0 18px rgba(125,76,255,0.22);
+.summary-body ul {
+  list-style: disc;
+  padding-left: 20px;
+  margin: 0 0 10px;
 }
-.resume-btn:disabled {
-  opacity: 0.6;
-  cursor: wait;
+.summary-take {
+  font-style: italic;
+  color: #bfa8ff;
+  font-size: 0.9rem;
+  margin-top: 6px;
+}
+/* === Aether pause/continue styling === */
+.response-paused {
+  color: #b6b3ff;
+  font-size: 0.9rem;
+  opacity: 0.8;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.continue-btn {
+  background: linear-gradient(90deg, #6b46ff, #9b74ff);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  padding: 4px 12px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+.continue-btn:hover {
+  background: linear-gradient(90deg, #7f57ff, #b38fff);
+  transform: scale(1.02);
 }
 
 @keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
   to { opacity: 1; transform: translateY(0); }
 }
-/* === Fade-out for paused message === */
-.bot-msg.paused.fade-out {
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.4s ease, transform 0.4s ease;
-}
-/* === Smooth Slide-Up Fade (for Paused Message Removal) === */
-@keyframes slideUpFade {
-  0% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-18px);
-  }
+
+/* Animated ellipsis for “continuing...”
+.typing-dots::after {
+  content: " ";
+  animation: typingDots 1.2s infinite;
 }
 
-.bot-msg.paused.slide-up-fade {
-  animation: slideUpFade 0.6s ease forwards;
+@keyframes typingDots {
+  0% { content: ""; }
+  33% { content: "."; }
+  66% { content: ".."; }
+  100% { content: "..."; }
+} */
+/* === Smooth Pause/Continue UI === */
+.pause-overlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  text-align: center;
+  animation: fadeIn 0.4s ease-in-out;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.pause-text {
+  color: #b7b3ff;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+  opacity: 0.8;
+}
+
+.continue-btn {
+  background: linear-gradient(90deg, #6b46ff, #9b74ff);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+.continue-btn:hover {
+  transform: scale(1.03);
+  background: linear-gradient(90deg, #7c5cff, #b38fff);
+}
+
+/* gentle shimmer effect */
+@keyframes shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: 200px 0; }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, #6b46ff, #9b74ff, #6b46ff);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite linear;
+}
+/* === FIX: Remove duplicate or browser-generated typing indicators === */
+.typing-indicator,
+.bot-msg.typing::after,
+.bot-msg.typing::before {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  content: none !important;
+}
+
+/* Prevent Chrome/Safari focus blips creating ghost pseudo-elements */
+input:-webkit-autofill,
+input:-internal-autofill-selected {
+  background: transparent !important;
+  color: inherit !important;
+  -webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
+}
+.bot-msg.typing::after,
+.bot-msg.typing::before,
+.typing-dots::after,
+.typing-dots::before {
+  content: none !important;
+  display: none !important;
+}
+/* === SECTION ICON GLOW EFFECTS === */
+.section-icon {
+  width: 22px;
+  height: 22px;
+  margin-right: 8px;
+  filter: drop-shadow(0 0 8px rgba(255,255,255,0.2));
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+/* Individual glow colors per platform */
+.news-icon {
+  filter: drop-shadow(0 0 8px rgba(0,148,255,0.6));
+}
+.youtube-icon {
+  filter: drop-shadow(0 0 8px rgba(255,0,0,0.6));
+}
+.reddit-icon {
+  filter: drop-shadow(0 0 8px rgba(255,69,0,0.6));
+}
+
+/* Hover/animate interaction */
+.section-header:hover .section-icon {
+  transform: scale(1.15);
+  filter: drop-shadow(0 0 16px currentColor);
+}
+.section-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  transform: translateY(1px);
+  transition: transform 0.25s ease, filter 0.25s ease;
+  margin-right: 0; /* ✅ remove extra space */
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 4px; /* ✅ was 6px — tighter alignment */
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #e6e2ff;
+}
+
+
+/* Brand glows */
+.section-icon.news-icon { filter: drop-shadow(0 0 6px rgba(0,148,255,0.8)); }
+.section-icon.youtube-icon { filter: drop-shadow(0 0 6px rgba(255,0,0,0.8)); }
+.section-icon.reddit-icon { filter: drop-shadow(0 0 6px rgba(255,69,0,0.8)); }
+
+/* Hover amplification */
+.section-header:hover .section-icon.news-icon { filter: drop-shadow(0 0 12px rgba(0,148,255,1)); }
+.section-header:hover .section-icon.youtube-icon { filter: drop-shadow(0 0 12px rgba(255,0,0,1)); }
+.section-header:hover .section-icon.reddit-icon { filter: drop-shadow(0 0 12px rgba(255,69,0,1)); transform: scale(1.08); }
+
+.section-header strong {
+  letter-spacing: 0.35px;
+  transition: color 0.3s ease;
+}
+.section-header.news:hover strong { color: #4caeff; }
+.section-header.youtube:hover strong { color: #ff4d4d; }
+.section-header.reddit:hover strong { color: #ff7733; }
+.show-more-btn {
+  display: block;
+  margin: 1rem auto 0;
+  padding: 0.5rem 1.2rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #cfcfff;
+  background: rgba(80, 70, 160, 0.25);
+  border: 1px solid rgba(140, 130, 255, 0.35);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 0 10px rgba(80, 70, 160, 0.2);
+}
+
+.show-more-btn:hover {
+  background: rgba(140, 130, 255, 0.35);
+  transform: translateY(-1px);
+  box-shadow: 0 0 15px rgba(140, 130, 255, 0.4);
+}
+
+.show-more-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+/* === FIX: Section spacing and visual continuity === */
+.section-news, .section-youtube, .section-reddit {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 16px;
+  padding: 18px 20px 24px;
+  margin: 12px 0 18px;
+  box-shadow: 0 0 25px rgba(80, 70, 160, 0.12);
+  transition: all 0.3s ease;
+}
+
+.section-news:hover,
+.section-youtube:hover,
+.section-reddit:hover {
+  box-shadow: 0 0 28px rgba(125, 110, 255, 0.18);
+  transform: translateY(-1px);
+}
+
+/* Section titles feel more integrated */
+.section-header strong {
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #ddd9ff;
+}
+
+/* “Show more” button aligns visually with cards */
+.section-news .show-more-btn,
+.section-youtube .show-more-btn,
+.section-reddit .show-more-btn {
+  margin-top: 14px;
+  margin-bottom: 0;
+  width: fit-content;
+  align-self: center;
+  background: rgba(120, 100, 255, 0.22);
+  border-color: rgba(160, 150, 255, 0.35);
+}
+/* === AETHER "Show More" Button Styling === */
+.show-more-btn {
+  align-self: center;
+  margin-top: 8px;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  color: #d5cfff;
+  background: rgba(125, 76, 255, 0.08);
+  border: 1px solid rgba(125, 76, 255, 0.2);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.show-more-btn:hover {
+  background: rgba(125, 76, 255, 0.25);
+  box-shadow: 0 0 10px rgba(125, 76, 255, 0.4);
+  transform: scale(1.03);
+}
+
+.show-more-btn:disabled {
+  opacity: 0.5;
+  cursor: wait;
 }
