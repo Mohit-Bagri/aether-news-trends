@@ -683,3 +683,72 @@ input:-internal-autofill-selected {
   opacity: 0.5;
   cursor: wait;
 }
+/* ================================
+   MOBILE FIXES (DO NOT MODIFY OTHER CODE)
+   ================================ */
+@media (max-width: 600px) {
+
+  body {
+    overflow: visible;              /* fix clipping */
+    align-items: flex-start;        /* allow scrolling naturally */
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .app-center {
+    padding: 12px;
+    width: 100%;
+  }
+
+  .chat-wrapper {
+    width: 100%;
+    height: calc(100vh - 20px);     /* prevent overflow behind buttons */
+    border-radius: 18px;
+  }
+
+  .chat-box {
+    padding: 14px 16px !important;
+  }
+
+  .chat-form {
+    padding: 12px 14px;
+    padding-bottom: calc(14px + env(safe-area-inset-bottom));
+    background: rgba(0,0,0,0.55);
+  }
+
+  .chat-input-container {
+    padding: 0.55rem 0.7rem;
+  }
+
+  .chat-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .chat-input-container input {
+    font-size: 0.9rem;
+  }
+}
+/* --- FIX: Prevent input bar overflow on very small screens --- */
+@media (max-width: 600px) {
+
+  .chat-input-container {
+    gap: 0.35rem;                 /* slightly reduce spacing */
+    padding: 0.45rem 0.6rem;      /* tighter padding */
+  }
+
+  .chat-btn {
+    width: 38px;                  /* reduce button size */
+    height: 38px;
+    border-radius: 10px;
+  }
+
+  .chat-btn svg {
+    width: 18px;                  /* scale icons */
+    height: 18px;
+  }
+
+  .chat-input-container input {
+    font-size: 0.85rem;           /* scale text slightly */
+    min-width: 0;                 /* prevent overflow calculations */
+  }
+}
