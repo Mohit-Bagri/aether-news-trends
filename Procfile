@@ -1,1 +1,1 @@
-web: gunicorn app:app --chdir webapp --bind 0.0.0.0:$PORT --workers 3
+web: gunicorn app:app --chdir webapp --bind 0.0.0.0:$PORT
