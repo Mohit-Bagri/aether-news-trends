@@ -13,7 +13,9 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 # ---------------------------------------------------------
 # 🔹 MAIN LLM RESPONSE GENERATOR (supports resume)
 # ---------------------------------------------------------
-def generate_llm_response(intent, tone, user_input, prefix=None, remaining=None, resume=False):
+def generate_llm_response(
+    intent, tone, user_input, prefix=None, remaining=None, resume=False
+):
     """
     If resume=True → we DO NOT call OpenAI again.
     We simply return the remaining text.
@@ -28,10 +30,8 @@ def generate_llm_response(intent, tone, user_input, prefix=None, remaining=None,
 
         return {
             "status": "success",
-            "resume": True,          # <-- important
-            "results": [
-                {"source_type": "aether_reply", "title": continued_text}
-            ]
+            "resume": True,  # <-- important
+            "results": [{"source_type": "aether_reply", "title": continued_text}],
         }
 
     # -----------------------------------------------------
@@ -40,8 +40,12 @@ def generate_llm_response(intent, tone, user_input, prefix=None, remaining=None,
     if not OPENAI_API_KEY:
         return {
             "status": "error",
-            "results": [{"source_type": "aether_reply",
-                         "title": "⚠️ Missing API key. Please check your .env file."}]
+            "results": [
+                {
+                    "source_type": "aether_reply",
+                    "title": "⚠️ Missing API key. Please check your .env file.",
+                }
+            ],
         }
 
     # --- SYSTEM PROMPT ---
@@ -83,29 +87,26 @@ Avoid disclaimers and system-style text.
                         {"role": "user", "content": user_prompt.strip()},
                     ],
                     "temperature": 0.8,
-                    "max_tokens": 600
-                }
+                    "max_tokens": 600,
+                },
             )
 
         data = response.json()
-        print("🔥 RAW OPENAI RESPONSE:", data)   # <— DEBUG HERE
+        print("🔥 RAW OPENAI RESPONSE:", data)  # <— DEBUG HERE
 
         reply = data["choices"][0]["message"].get("content", "").strip()
-       
+
     except Exception as e:
         print("❌ OPENAI ERROR:", str(e))
         reply = f"❌ OpenAI failed: {str(e)}"
 
-     # -----------------------------------------------------
+    # -----------------------------------------------------
     # 🔥 3. ENSURE FUNCTION ALWAYS RETURNS VALID STRUCTURE
     # -----------------------------------------------------
     return {
         "status": "success",
-        "results": [
-            {"source_type": "aether_reply", "title": reply}
-        ]
+        "results": [{"source_type": "aether_reply", "title": reply}],
     }
-
 
 
 # ---------------------------------------------------------
@@ -114,30 +115,194 @@ Avoid disclaimers and system-style text.
 def detect_tone_change(user_message: str):
     msg = user_message.lower().strip()
 
-    tone_map = {
-        "casual": ["casual", "friendly", "chill", "talk normally"],
-        "professional": ["professional", "formal", "business"],
-        "comic": [
-            "comic", "funny", "humorous", "funniest",
-            "make me laugh", "be funny", "joke",
-            "fun way", "funniest way", "crack me up",
-            "make it hilarious", "hilarious", "in the funniest way",
-            "tell in a funny way"
+    tone_map = tone_map = {
+        "casual": [
+            "casual",
+            "friendly",
+            "chill",
+            "talk normally",
+            "normal tone",
+            "simple tone",
+            "relaxed",
+            "easy going",
         ],
-        "empathetic": ["empathetic", "kind", "understanding"],
-        "creative": ["creative", "artistic", "imaginative"],
-        "analytical": ["analytical", "logical", "rational"],
-        "professor": ["professor", "teacher", "academic", "phd"],
-        "confident": ["confident", "assertive", "bold"],
-        "sarcastic": ["sarcastic", "sarcasm", "be sarcastic"],
-        "roast": ["roast", "roast me", "insult me", "destroy me"],
-        "genz": ["genz", "gen z", "sigma", "skibidi", "rizz", "npc talk"],
-        "dark_humor": ["dark humor", "dark-humor", "dark jokes"],
-        "cold": ["cold", "emotionless", "robotic", "heartless"],
-        "wholesome": ["wholesome", "comforting", "kind-hearted"],
-        "bollywood": ["bollywood", "dramatic", "filmy"],
-        "ultra_nerd": ["ultra nerd", "scientific", "hyper technical"],
-        "shakespeare": ["shakespeare", "bard", "old english", "elizabethan"],
+        "professional": [
+            "professional",
+            "formal",
+            "business",
+            "official",
+            "corporate",
+            "proper",
+            "structured",
+        ],
+        "comic": [
+            "comic",
+            "funny",
+            "humorous",
+            "funniest",
+            "make me laugh",
+            "be funny",
+            "joke",
+            "crack me up",
+            "fun way",
+            "make it hilarious",
+            "hilarious",
+            "tell in a funny way",
+            "comedy mode",
+            "joke mode",
+            "funny tone",
+        ],
+        "empathetic": [
+            "empathetic",
+            "kind",
+            "understanding",
+            "soft tone",
+            "be gentle",
+            "emotional",
+            "supportive",
+            "comfort me",
+            "be nice",
+            "be sweet",
+        ],
+        "creative": [
+            "creative",
+            "artistic",
+            "imaginative",
+            "fantasy",
+            "poetic",
+            "story mode",
+            "describe beautifully",
+            "use metaphors",
+            "expressive",
+        ],
+        "analytical": [
+            "analytical",
+            "logical",
+            "rational",
+            "explain logically",
+            "break it down",
+            "deep analysis",
+            "technical explanation",
+        ],
+        "professor": [
+            "professor",
+            "teacher",
+            "academic",
+            "phd",
+            "explain like teacher",
+            "explain like professor",
+            "university style",
+            "lecture mode",
+            "educational tone",
+        ],
+        "confident": [
+            "confident",
+            "assertive",
+            "bold",
+            "strong tone",
+            "dominating",
+            "commanding",
+        ],
+        "sarcastic": [
+            "sarcastic",
+            "sarcasm",
+            "be sarcastic",
+            "dry humor",
+            "mocking",
+            "deadpan tone",
+        ],
+        "roast": [
+            "roast",
+            "roast me",
+            "insult me",
+            "destroy me",
+            "burn me",
+            "funny insult",
+            "clown me",
+            "light roast",
+        ],
+        "genz": [
+            "genz",
+            "gen z",
+            "sigma",
+            "skibidi",
+            "rizz",
+            "npc talk",
+            "tiktok style",
+            "zoomery",
+            "slay",
+            "w rizz",
+            "based",
+            "gyatt",
+            "ohio",
+            "fanum tax",
+        ],
+        "dark_humor": [
+            "dark humor",
+            "dark-humor",
+            "dark jokes",
+            "edgy joke",
+            "twisted humor",
+        ],
+        "cold": [
+            "cold",
+            "emotionless",
+            "robotic",
+            "heartless",
+            "neutral tone",
+            "detached",
+            "dead inside",
+        ],
+        "wholesome": [
+            "wholesome",
+            "comforting",
+            "kind-hearted",
+            "soft",
+            "warm tone",
+            "encouraging",
+            "pure tone",
+        ],
+        "bollywood": [
+            "bollywood",
+            "dramatic",
+            "filmy",
+            "over dramatic",
+            "dramatic way",
+            "movie style",
+        ],
+        "ultra_nerd": [
+            "ultra nerd",
+            "scientific",
+            "hyper technical",
+            "nerd",
+            "nerdy",
+            "be a nerd",
+            "geek",
+            "geeky",
+            "nerdy way",
+            "talk nerdy",
+            "nerd mode",
+            "geek mode",
+            "super nerd",
+            "full nerd",
+            "math lover",
+            "space lover",
+            "astrophysics",
+            "coding nerd",
+            "explain like a scientist",
+            "go geek mode",
+            "tech nerd",
+            "engineer tone",
+            "scientific tone",
+        ],
+        "shakespeare": [
+            "shakespeare",
+            "bard",
+            "old english",
+            "elizabethan",
+            "thee thou",
+            "poetic old style",
+        ],
     }
 
     for tone, words in tone_map.items():
@@ -153,9 +318,7 @@ def refine_search_query(raw_query: str):
     if not OPENAI_API_KEY:
         return raw_query
 
-    system_prompt = (
-        "Rewrite the user input into a short, API-friendly search phrase."
-    )
+    system_prompt = "Rewrite the user input into a short, API-friendly search phrase."
 
     user_prompt = f"User query: '{raw_query}'\nReturn only the refined phrase."
 
@@ -163,8 +326,10 @@ def refine_search_query(raw_query: str):
         with httpx.Client(timeout=8.0) as client:
             response = client.post(
                 "https://api.openai.com/v1/chat/completions",
-                headers={"Authorization": f"Bearer {OPENAI_API_KEY}",
-                         "Content-Type": "application/json"},
+                headers={
+                    "Authorization": f"Bearer {OPENAI_API_KEY}",
+                    "Content-Type": "application/json",
+                },
                 json={
                     "model": "gpt-4o-mini",
                     "messages": [
