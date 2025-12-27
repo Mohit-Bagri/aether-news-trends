@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-  <a href="https://aether-news-trends-vpt4.onrender.com/">View Live Demo</a>
+  <a href="https://aether-news-trends-vpt4.onrender.com/" target="_blank">🔗 View Live Demo</a>
 </p>
 
 ---
@@ -33,6 +33,8 @@
 ## About
 
 AETHER is an intelligent AI-powered chatbot that aggregates real-time news, YouTube videos and Reddit discussions into a seamless conversational experience. Ask about any topic and get curated content with AI-generated insights.
+
+Beyond news aggregation, AETHER also functions as a powerful general-purpose AI assistant capable of answering questions, having conversations and helping with everyday tasks - making it your all-in-one AI companion.
 
 ---
 
