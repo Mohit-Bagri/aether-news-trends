@@ -1,6 +1,6 @@
 <h1 align="center">AETHER</h1>
 
-<p align="center"><strong>Your Personal AI & Tech Companion</strong></p>
+<p align="center"><strong>Your AI-powered News & Tech Companion</strong></p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.13-blue?logo=python" alt="Python">
