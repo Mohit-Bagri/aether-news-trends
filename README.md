@@ -1,12 +1,38 @@
-# AETHER
+<h1 align="center">AETHER</h1>
 
-**Your Personal AI & Tech Companion**
+<p align="center"><strong>Your Personal AI & Tech Companion</strong></p>
 
-AETHER is an intelligent AI-powered chatbot that aggregates real-time news, YouTube videos, and Reddit discussions into a seamless conversational experience. Ask about any topic and get curated content with AI-generated insights.
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.13-blue?logo=python" alt="Python">
+  <img src="https://img.shields.io/badge/Flask-3.1.2-green?logo=flask" alt="Flask">
+  <img src="https://img.shields.io/badge/OpenAI-GPT--4o--mini-purple?logo=openai" alt="OpenAI">
+  <img src="https://img.shields.io/badge/spaCy-NLP-09A3D5?logo=spacy" alt="spaCy">
+  <img src="https://img.shields.io/badge/NewsAPI-News-ff6600" alt="NewsAPI">
+  <img src="https://img.shields.io/badge/YouTube-API-red?logo=youtube" alt="YouTube">
+  <img src="https://img.shields.io/badge/Reddit-API-FF4500?logo=reddit" alt="Reddit">
+</p>
 
-![Python](https://img.shields.io/badge/Python-3.13-blue?logo=python)
-![Flask](https://img.shields.io/badge/Flask-3.1.2-green?logo=flask)
-![OpenAI](https://img.shields.io/badge/OpenAI-GPT--4o--mini-purple?logo=openai)
+<p align="center">
+  <a href="https://aether-news-trends-vpt4.onrender.com/">View Live Demo</a>
+</p>
+
+---
+
+## Table of Contents
+
+- [About](#about)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Installation](#installation)
+- [API Keys](#api-keys)
+- [Usage](#usage)
+
+---
+
+## About
+
+AETHER is an intelligent AI-powered chatbot that aggregates real-time news, YouTube videos and Reddit discussions into a seamless conversational experience. Ask about any topic and get curated content with AI-generated insights.
 
 ---
 
@@ -33,7 +59,6 @@ AETHER is an intelligent AI-powered chatbot that aggregates real-time news, YouT
 | **AI/ML** | OpenAI API, spaCy, scikit-learn, NLTK |
 | **APIs** | NewsAPI, GNews, YouTube Data API, Reddit API |
 | **Frontend** | HTML5, CSS3, Vanilla JavaScript |
-| **Deployment** | Render |
 
 ---
 
@@ -143,15 +168,6 @@ Open **http://127.0.0.1:5050** in your browser.
 - "Show me more news"
 - "More YouTube videos"
 - "More Reddit posts"
-
----
-
-## Deployment on Render
-
-1. Connect your GitHub repository to Render
-2. Set environment variables in Render dashboard
-3. Build command: `pip install -r requirements.txt && python -m spacy download en_core_web_sm`
-4. Start command: `gunicorn --chdir webapp app:app`
 
 ---
 
