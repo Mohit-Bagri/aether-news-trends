@@ -143,7 +143,7 @@ function handleResume() {
 
   // === INITIAL GREETING ===
   setTimeout(() => {
-    renderBotMessage("Hey, I'm Aether, your smart news and AI companion! Ask me anything.", { mode: "fade" });
+    renderBotMessage("Hey, I'm Aether - your smart news and AI companion! Ask me anything.", { mode: "fade" });
   }, 400);
 
   // === SCROLL HANDLING ===
