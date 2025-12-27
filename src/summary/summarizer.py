@@ -76,8 +76,8 @@ def summarize_results(news_list=None, reddit_list=None, youtube_list=None, tone=
     if not cleaned:
         return {
             "source_type": "summary",
-            "title": "🪶 Aether’s Briefing",
-            "description": "⚠️ No relevant posts found."
+            "title": "Aether's Briefing",
+            "description": "No relevant posts found."
         }
 
     # ------------------------------------------
@@ -134,9 +134,9 @@ def summarize_results(news_list=None, reddit_list=None, youtube_list=None, tone=
     # Final description (frontend parses this cleanly)
     # ------------------------------------------
     description = (
-        "🪶 **Aether’s Briefing**\n\n"
+        "**Aether's Briefing**\n\n"
         + "\n".join(bullet_lines)
-        + "\n\n✨ **Aether’s Take:**\n"
+        + "\n\n✨ **Aether's Take:**\n"
         + take_final
     ).strip()
 
@@ -145,6 +145,6 @@ def summarize_results(news_list=None, reddit_list=None, youtube_list=None, tone=
     # ------------------------------------------
     return {
         "source_type": "summary",
-        "title": "🪶 Aether’s Briefing",
+        "title": "Aether's Briefing",
         "description": description,
     }

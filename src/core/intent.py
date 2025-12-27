@@ -226,7 +226,7 @@ def handle_intent(intent: str, tone: str, user_message: str):
         set_mode(tone_change)
         tone_response = {
             "source_type": "aether_reply",
-            "title": f"🎭 Switched to {tone_change.title()} mode — let's continue!",
+            "title": f"Switched to {tone_change.title()} mode — let's continue!",
         }
 
         generated = generate_llm_response("chat", tone_change, user_message)
@@ -292,7 +292,7 @@ def handle_intent(intent: str, tone: str, user_message: str):
         if intent == "news_only":
             return {
                 "status": "success",
-                "results": news_final or [{"source_type": "aether_reply", "title": "⚠️ No news found."}],
+                "results": news_final or [{"source_type": "aether_reply", "title": "No news found."}],
             }
 
         # fetch extras for briefing
@@ -329,7 +329,7 @@ def handle_intent(intent: str, tone: str, user_message: str):
         reddit_final = score_relevance(reddit_list, refined_message)[:5]
         return {
             "status": "success",
-            "results": reddit_final or [{"source_type": "aether_reply", "title": "⚠️ No Reddit posts found."}],
+            "results": reddit_final or [{"source_type": "aether_reply", "title": "No Reddit posts found."}],
         }
 
     # -----------------------------------------------------------
@@ -340,7 +340,7 @@ def handle_intent(intent: str, tone: str, user_message: str):
         yt_final = score_relevance(yt_list, refined_message)[:5]
         return {
             "status": "success",
-            "results": yt_final or [{"source_type": "aether_reply", "title": "⚠️ No YouTube videos found."}],
+            "results": yt_final or [{"source_type": "aether_reply", "title": "No YouTube videos found."}],
         }
 
     # -----------------------------------------------------------
