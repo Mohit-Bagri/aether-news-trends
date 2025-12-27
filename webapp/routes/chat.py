@@ -25,7 +25,7 @@ def chat():
                 "results": [
                     {
                         "source_type": "aether_reply",
-                        "title": "⚠️ Please enter a message."
+                        "title": "Please enter a message."
                         }
                 ]
             }), 200
@@ -104,7 +104,7 @@ def chat():
             "results": [
                 {
                     "source_type": "aether_reply",
-                    "title": f"❌ Internal error: {str(e)}"
+                    "title": f"Internal error: {str(e)}"
                 }
             ]
         }), 500

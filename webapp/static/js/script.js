@@ -81,7 +81,7 @@ function scrollToBottom(force = false) {
   pauseOverlay = document.createElement("div");
   pauseOverlay.className = "pause-overlay fade-in";
   pauseOverlay.innerHTML = `
-    <div class="pause-text">🕓 Response paused.</div>
+    <div class="pause-text">Response paused.</div>
     <button class="continue-btn shimmer">▶ Continue generating</button>
   `;
   chatBox.appendChild(pauseOverlay);
@@ -143,7 +143,7 @@ function handleResume() {
 
   // === INITIAL GREETING ===
   setTimeout(() => {
-    renderBotMessage("👋 Hey, I'm Aether — your AI companion! Ask me anything.", { mode: "fade" });
+    renderBotMessage("Hey, I'm Aether, your AI companion! Ask me anything.", { mode: "fade" });
   }, 400);
 
   // === SCROLL HANDLING ===
@@ -288,7 +288,7 @@ const res = await fetch("/chat", {
 
       if (!res.ok) {
         console.warn("⚠️ Chat fetch failed:", res.status);
-        renderBotMessage("⚠️ Couldn’t get a response, please retry.");
+        renderBotMessage("Couldn't get a response, please retry.");
         return;
       }
 
@@ -310,7 +310,7 @@ const res = await fetch("/chat", {
       console.log("Fetch aborted by user.");
     } else {
       console.error(err);
-      renderBotMessage("⚠️ Something went wrong, please retry.");
+      renderBotMessage("Something went wrong, please retry.");
       postEvent("send_error", { error: err.message || err });
     }
   } finally {
@@ -636,7 +636,7 @@ async function renderBriefingCard(item) {
   card.innerHTML = `
     <div class="summary-inner">
       <div class="summary-header-bubble">
-        <span class="summary-icon">🪶</span>
+        <span class="summary-icon"></span>
         <span class="summary-title">Aether’s Briefing</span>
         <button class="summary-toggle" aria-expanded="true">▲ Hide</button>
       </div>
