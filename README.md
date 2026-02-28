@@ -12,8 +12,13 @@
   <img src="https://img.shields.io/badge/Reddit-API-FF4500?logo=reddit" alt="Reddit">
 </p>
 
-<p align="center">
-  <a href="https://aether-news-trends-vpt4.onrender.com/" target="_blank">🔗 View Live Demo</a>
+
+
+
+  <p align="center">
+  <a href="https://aether-news-trends-vpt4.onrender.com/" target="_blank">
+    <img src="https://img.shields.io/badge/🔗_Live_Demo-aether--news--trends-F5C518?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" />
+  </a>
 </p>
 
 ---
