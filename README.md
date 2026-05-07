@@ -179,5 +179,5 @@ Open **http://127.0.0.1:5050** in your browser.
 ---
 
 <p align="center">
-  Made in 🇮🇳 with ❤️ by <a href="https://mohitbagri-portfolio.vercel.app">MOHIT BAGRI</a>
+  Made in 🇮🇳 with ❤️ by <a href="https://github.com/Mohit-Bagri">MOHIT BAGRI</a>
 </p>
