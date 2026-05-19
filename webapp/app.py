@@ -27,7 +27,7 @@ try:
     from webapp.routes.chat import chat_bp
 except Exception as e:
     chat_bp = None
-    print(f"⚠️ chat_bp import failed: {e}")
+    print(f"chat_bp import failed: {e}")
 
 # --- Flask Setup ---
 template_path = os.path.join(PROJECT_ROOT, "webapp", "templates")
@@ -41,11 +41,11 @@ abort_flags = {}
 if chat_bp:
     try:
         app.register_blueprint(chat_bp)
-        print("✅ Registered chat blueprint successfully.")
+        print("Registered chat blueprint successfully.")
     except Exception as e:
-        print(f"⚠️ Failed to register chat blueprint: {e}")
+        print(f"Failed to register chat blueprint: {e}")
 else:
-    print("⚠️ chat_bp not available. Using fallback routes only.")
+    print("chat_bp not available. Using fallback routes only.")
 
 # --- Conversation Memory ---
 conversation_history = deque(maxlen=8)
@@ -114,7 +114,7 @@ def abort():
     """Stop current generation safely."""
     tid = threading.get_ident()
     abort_flags[tid] = True
-    print(f"🛑 Abort flag set for thread {tid}")
+    print(f"Abort flag set for thread {tid}")
     return Response(json.dumps({"status": "aborted"}), mimetype="application/json")
 
 @app.route("/debug_ping")
@@ -125,7 +125,7 @@ def debug_ping():
 # --- Global Error Handler ---
 @app.errorhandler(Exception)
 def handle_all_exceptions(e):
-    print("\n❌ GLOBAL FLASK ERROR — FULL TRACEBACK BELOW:")
+    print("\nGLOBAL FLASK ERROR — FULL TRACEBACK BELOW:")
     print("=" * 90)
     traceback.print_exc()
     print("=" * 90)
@@ -136,9 +136,9 @@ def handle_all_exceptions(e):
 if __name__ == "__main__":
     port = int(os.environ.get("AETHER_PORT", 5050))
     print("\n" + "=" * 90)
-    print(f"🚀 Starting Aether backend on http://127.0.0.1:{port}")
-    print(f"📁 Templates: {template_path}")
-    print(f"📁 Static: {static_path}")
+    print(f"Starting Aether backend on http://127.0.0.1:{port}")
+    print(f"Templates: {template_path}")
+    print(f"Static: {static_path}")
     print("=" * 90 + "\n")
     app.run(host="127.0.0.1", port=port, debug=True, threaded=True, use_reloader=False)
 

@@ -48,7 +48,7 @@ def main(topic="AI"):
     df["num_chars"] = df["clean_text"].apply(len)
 
     df.to_csv(OUTPUT_CSV, index=False)
-    print(f"✅ Saved NLP-ready data for '{topic}' to {OUTPUT_CSV}")
+    print(f"Saved NLP-ready data for '{topic}' to {OUTPUT_CSV}")
 
     return OUTPUT_CSV
 

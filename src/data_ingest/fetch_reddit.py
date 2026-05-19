@@ -35,9 +35,9 @@ def _is_relevant(text: str, topic: str):
 
 def fetch_reddit_posts(topic="news", limit=30):
     """Fetch Reddit posts as list[dict] compatible with Aether’s pipeline."""
-    print(f"🧵 Reddit: Fetching posts for '{topic}'...")
+    print(f"Reddit: Fetching posts for '{topic}'...")
     topic = refine_search_query(topic)
-    print(f"🔍 Refined Reddit topic: {topic}")
+    print(f"Refined Reddit topic: {topic}")
 
     topic_variants = list(dict.fromkeys([
         topic.strip(),
@@ -57,12 +57,12 @@ def fetch_reddit_posts(topic="news", limit=30):
         try:
             r = requests.get(url, headers=headers, timeout=10)
             if r.status_code == 429:
-                print("⛔ Reddit rate limit — skipping variant temporarily.")
+                print("Reddit rate limit — skipping variant temporarily.")
                 continue
             r.raise_for_status()
             data = r.json()
         except Exception as e:
-            print(f"⚠️ Reddit fetch failed for '{variant}': {e}")
+            print(f"Reddit fetch failed for '{variant}': {e}")
             continue
 
         for post in data.get("data", {}).get("children", []):
@@ -101,7 +101,7 @@ def fetch_reddit_posts(topic="news", limit=30):
             break
 
     if not posts:
-        print(f"⚠️ Reddit: No relevant posts for '{topic}'")
+        print(f"Reddit: No relevant posts for '{topic}'")
         return []
 
     # Remove duplicates by title
@@ -112,5 +112,5 @@ def fetch_reddit_posts(topic="news", limit=30):
             seen.add(p["title"].lower())
             unique_posts.append(p)
 
-    print(f"✅ Reddit: {len(unique_posts)} relevant posts found (top: {unique_posts[0]['title'][:60]}...)")
+    print(f"Reddit: {len(unique_posts)} relevant posts found (top: {unique_posts[0]['title'][:60]}...)")
     return unique_posts

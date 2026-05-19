@@ -58,14 +58,14 @@ def _is_relevant(text: str, topic: str):
 
 def fetch_youtube_videos(query="news", max_results=20):
     """Fetch YouTube videos as list[dict] compatible with Aether’s pipeline."""
-    print(f"🎥 YouTube: Fetching videos for '{query}'...")
+    print(f"YouTube: Fetching videos for '{query}'...")
     # query is already refined by intent handler
     query = query.strip()
 
-    print(f"🔍 Refined YouTube topic: {query}")
+    print(f"Refined YouTube topic: {query}")
 
     if not YOUTUBE_API_KEY:
-        print("❌ Missing YOUTUBE_API_KEY")
+        print("Missing YOUTUBE_API_KEY")
         return []
 
     now = datetime.now(timezone.utc)
@@ -97,7 +97,7 @@ def fetch_youtube_videos(query="news", max_results=20):
             data = r.json()
             return [i["id"]["videoId"] for i in data.get("items", []) if "videoId" in i["id"]]
         except Exception as e:
-            print(f"⚠️ YouTube search failed for '{q}' ({duration}): {e}")
+            print(f"YouTube search failed for '{q}' ({duration}): {e}")
             return []
 
     all_ids = []
@@ -109,7 +109,7 @@ def fetch_youtube_videos(query="news", max_results=20):
 
     all_ids = list(dict.fromkeys(all_ids))
     if not all_ids:
-        print("⚠️ YouTube: No results found after all variants")
+        print("YouTube: No results found after all variants")
         return []
 
     params = {"part": "statistics,snippet,contentDetails", "id": ",".join(all_ids[:50]), "key": YOUTUBE_API_KEY}
@@ -119,7 +119,7 @@ def fetch_youtube_videos(query="news", max_results=20):
         r.raise_for_status()
         data = r.json()
     except Exception as e:
-        print(f"❌ YouTube details failed: {e}")
+        print(f"YouTube details failed: {e}")
         return []
 
     videos = []
@@ -159,7 +159,7 @@ def fetch_youtube_videos(query="news", max_results=20):
         })
 
     if not videos:
-        print("⚠️ Filtered out all YT videos after relevance check")
+        print("Filtered out all YT videos after relevance check")
         return []
 
     # === SMART RELEVANCE & ENGAGEMENT SCORING ===
@@ -171,14 +171,14 @@ def fetch_youtube_videos(query="news", max_results=20):
         title = v.get("title", "").lower()
         channel = v.get("channel", "").lower()
 
-        # ✅ 1. Title and channel keyword matches (weighted)
+        # 1. Title and channel keyword matches (weighted)
         keyword_hits = sum(k in title for k in query_keywords) * 3
         keyword_hits += sum(k in channel for k in query_keywords) * 2
 
-        # ✅ 2. Engagement score (views in hundreds of thousands)
+        # 2. Engagement score (views in hundreds of thousands)
         view_boost = min(v.get("views", 0) / 200_000, 5)  # scaled 0–5
 
-        # ✅ 3. Recency bonus (prefer newer videos)
+        # 3. Recency bonus (prefer newer videos)
         recent_bonus = 0
         if v["published"].endswith("ago"):
             try:
@@ -189,7 +189,7 @@ def fetch_youtube_videos(query="news", max_results=20):
 
         return keyword_hits + view_boost + recent_bonus
 
-    # 🧠 Optional: boost exact channel match
+    # Optional: boost exact channel match
     for v in videos:
         if query_lower in v.get("channel", "").lower():
             v["views"] *= 2  # stronger weight for exact creator
@@ -203,5 +203,5 @@ def fetch_youtube_videos(query="news", max_results=20):
     # Limit to top results
     videos = videos[:max_results]
 
-    print(f"✅ YouTube: {len(videos)} ranked videos (top={videos[0]['title'][:60]}...)")
+    print(f"YouTube: {len(videos)} ranked videos (top={videos[0]['title'][:60]}...)")
     return videos

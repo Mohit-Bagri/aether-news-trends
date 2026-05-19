@@ -9,10 +9,10 @@ def main(topic="AI", output_path=None):
     OUTPUT_PATH = Path(output_path) if output_path else Path(f"data/processed/news_topics_{topic_tag}.csv")
 
     df = pd.read_csv(DATA_PATH)
-    print(f"🔍 Loaded {len(df)} articles for topic '{topic}'")
+    print(f"Loaded {len(df)} articles for topic '{topic}'")
 
     if len(df) < 3:
-        print("⚠️ Not enough data for topic modeling — need at least 3 articles.")
+        print("Not enough data for topic modeling — need at least 3 articles.")
         return
 
     n_docs = len(df)
@@ -30,9 +30,9 @@ def main(topic="AI", output_path=None):
     topic_keywords = {i: [terms[idx] for idx in kmeans.cluster_centers_[i].argsort()[-10:][::-1]] for i in range(k)}
 
     df.to_csv(OUTPUT_PATH, index=False)
-    print(f"✅ Topic modeling complete for '{topic}'. Saved to {OUTPUT_PATH}")
+    print(f"Topic modeling complete for '{topic}'. Saved to {OUTPUT_PATH}")
 
     for t, words in topic_keywords.items():
-        print(f"🧩 Topic {t}: {', '.join(words)}")
+        print(f"Topic {t}: {', '.join(words)}")
 
     return OUTPUT_PATH

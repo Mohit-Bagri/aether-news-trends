@@ -1,4 +1,4 @@
-// ✅ Aether Frontend Script — Resume + Event-logging + Briefing-suppress fix
+// Aether Frontend Script — Resume + Event-logging + Briefing-suppress fix
 document.addEventListener("DOMContentLoaded", () => {
   const chatForm = document.getElementById("chatForm");
   const userInput = document.getElementById("userInput");
@@ -27,7 +27,7 @@ stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v10"></path><rect x
   let autoScrollLocked = false;
   let isTyping = false;
   let userScrolledUp = false;
-  // 🔥 REQUIRED for Pause → Resume (Option B continuation)
+  // REQUIRED for Pause → Resume (Option B continuation)
 let lastPartial = { prefix: "", remaining: "" };
 
 
@@ -57,7 +57,7 @@ function scrollToBottom(force = false) {
   }
 }
 
-  console.log("🚀 Aether JS — resume+events patch loaded");
+  console.log("Aether JS — resume+events patch loaded");
 
   function handlePause() {
   if (!currentAbort) return;
@@ -166,7 +166,7 @@ chatBox.addEventListener("scroll", () => {
   if (!userAtBottom) {
     userScrolledUp = true;
     autoScrollLocked = true;
-    isTyping = false;      // 🔥 prevents auto-scroll override during typing
+    isTyping = false;      // prevents auto-scroll override during typing
   } else {
     userScrolledUp = false;
     autoScrollLocked = false;
@@ -203,7 +203,7 @@ micBtn.addEventListener("click", () => {
   recognition.lang = "en-US";
   recognition.interimResults = false;
 
-  // 🔴 Visual feedback (red glow)
+  // Visual feedback (red glow)
   micBtn.classList.add("listening");
   userInput.placeholder = "Listening...";
 
@@ -211,7 +211,7 @@ micBtn.addEventListener("click", () => {
 
   recognition.onresult = (event) => {
     const transcript = event.results[0][0].transcript.trim();
-    // 🧠 Append instead of overwrite
+    // Append instead of overwrite
     if (userInput.value.trim().length > 0) {
       userInput.value = (userInput.value + " " + transcript).trim();
     } else {
@@ -235,7 +235,7 @@ micBtn.addEventListener("click", () => {
 async function handleSend(customMessage = null, opts = {}) {
   const message = customMessage || userInput.value.trim();
   if (!message) return;
-  // 🔥 Reset partial buffer for fresh messages
+  // Reset partial buffer for fresh messages
 if (!opts.resume) {
   lastPartial = { prefix: "", remaining: "" };
 }
@@ -243,7 +243,7 @@ if (!opts.resume) {
 
   lastUserMessage = message;
 
-  // 🧹 Reset scroll lock when new message is sent
+  // Reset scroll lock when new message is sent
 userScrolledUp = false;
 autoScrollLocked = false;
 
@@ -276,7 +276,7 @@ autoScrollLocked = false;
         payload.prefix = opts.prefix || "";
         payload.remaining = opts.remaining || "";
       }
-      // 🔥 Missing fetch — add this back
+      // Missing fetch — add this back
 const res = await fetch("/chat", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
@@ -287,7 +287,7 @@ const res = await fetch("/chat", {
 
 
       if (!res.ok) {
-        console.warn("⚠️ Chat fetch failed:", res.status);
+        console.warn("Chat fetch failed:", res.status);
         renderBotMessage("Couldn't get a response, please retry.");
         return;
       }
@@ -500,7 +500,7 @@ if (!userScrolledUp && !autoScrollLocked) {
   showMoreBtn.disabled = true;
   showMoreBtn.textContent = "Loading...";
 
-  // 🚫 Temporarily stop auto-scroll from triggering
+  // Temporarily stop auto-scroll from triggering
   autoScrollLocked = true;
   observer.disconnect();
 
@@ -541,7 +541,7 @@ if (!userScrolledUp && !autoScrollLocked) {
         requestAnimationFrame(() => newCard.classList.add("show"));
       }
 
-      // ✅ Maintain visual stability — prevent weird jumps
+      // Maintain visual stability — prevent weird jumps
 const previousScroll = chatBox.scrollTop; // where user was
 const previousHeight = chatBox.scrollHeight;
 
@@ -558,9 +558,9 @@ chatBox.scrollTo({
 
     }
   } catch (err) {
-    console.error("⚠️ Error appending more:", err);
+    console.error("Error appending more:", err);
   } finally {
-    // 🕓 Wait a bit, then re-enable auto-scroll watching
+    // Wait a bit, then re-enable auto-scroll watching
     setTimeout(() => {
       autoScrollLocked = false;
       observer.observe(chatBox, { childList: true, subtree: true });
@@ -591,7 +591,7 @@ function exitGeneratingState() {
   sendBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>`;
   sendBtn.classList.remove("stop-active");
 
-  // ✅ Re-enable input + mic after generation completes
+  // Re-enable input + mic after generation completes
   userInput.disabled = false;
   micBtn.disabled = false;
   micBtn.classList.remove("mic-disabled");
@@ -624,9 +624,9 @@ async function renderBriefingCard(item) {
 
   // Extract Aether's Take
   let take = "";
-  const takeIndex = desc.indexOf("✨ **Aether’s Take:**");
+  const takeIndex = desc.indexOf("Aether’s Take:");
   if (takeIndex !== -1) {
-    take = desc.slice(takeIndex).replace("✨ **Aether’s Take:**", "").trim();
+    take = desc.slice(takeIndex).replace("Aether’s Take:", "").trim();
   }
 
   // Create the card element
@@ -669,14 +669,14 @@ async function renderBriefingCard(item) {
 
   // === RESPONSE HANDLER ===
   async function renderResponseData(data) {
-    // 🚀 Always unlock auto-scroll before rendering heavy content (fixes YT freeze)
+    // Always unlock auto-scroll before rendering heavy content (fixes YT freeze)
 userScrolledUp = false;
 autoScrollLocked = false;
 
     if (!data || data.status !== "success") return;
     const grouped = { news: [], youtube: [], reddit: [], summary: [], aether_reply: [] };
 
-// ✅ FIX: extract the summary/briefing item FIRST
+// FIX: extract the summary/briefing item FIRST
 const summaryItem = (data.results || []).find(
   (i) => i.source_type === "summary" || i.source_type === "briefing"
 );
@@ -691,7 +691,7 @@ if (grouped.news.length) await renderSection("News", grouped.news, "news");
 if (grouped.youtube.length) await renderSection("YouTube", grouped.youtube, "youtube");
 if (grouped.reddit.length) await renderSection("Reddit", grouped.reddit, "reddit");
 
-// 🎉 FINALLY WORKS
+// FINALLY WORKS
 if (summaryItem) renderBriefingCard(summaryItem);
 
 // === Render Aether replies (resume-aware continuation)
@@ -703,7 +703,7 @@ const hasBriefing = !!summaryItem;
 for (const reply of aetherReplies) {
   if (!reply.title) continue;
 
-  // 🔥 NEW: If backend indicates continuation, append to SAME bubble
+  // NEW: If backend indicates continuation, append to SAME bubble
   if (data.resume) {
     const lastBubble = chatBox.querySelector(".bot-msg.aether-reply:last-child .reveal");
     if (lastBubble) {

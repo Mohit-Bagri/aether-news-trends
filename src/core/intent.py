@@ -75,7 +75,7 @@ def _wants_news_fetch(msg: str) -> bool:
 
 
 # -----------------------------------------------------------
-# 🧠 Intent classification
+# Intent classification
 # -----------------------------------------------------------
 def classify_intent(user_message: str) -> str:
     msg = (user_message or "").strip().lower()
@@ -123,7 +123,7 @@ def classify_intent(user_message: str) -> str:
 
 
 # -----------------------------------------------------------
-# 🧮 Smart Relevance Scoring
+# Smart Relevance Scoring
 # -----------------------------------------------------------
 def score_relevance(items, query, key_fields=("title", "description")):
     if not items:
@@ -181,7 +181,7 @@ def score_relevance(items, query, key_fields=("title", "description")):
 
 
 # -----------------------------------------------------------
-# 🎯 Intent Handler (MAIN)
+# Intent Handler (MAIN)
 # -----------------------------------------------------------
 def handle_intent(intent: str, tone: str, user_message: str):
 
@@ -206,7 +206,7 @@ def handle_intent(intent: str, tone: str, user_message: str):
             return {
                 "status": "success",
                 "results": [
-                    {"source_type": "aether_reply", "title": "⚠️ I don’t have anything to summarize yet!"}
+                    {"source_type": "aether_reply", "title": "I don’t have anything to summarize yet!"}
                 ],
             }
 
@@ -217,7 +217,7 @@ def handle_intent(intent: str, tone: str, user_message: str):
     if not user_message.strip():
         return {
             "status": "error",
-            "results": [{"source_type": "aether_reply", "title": "⚠️ Please type something for me to respond to!"}],
+            "results": [{"source_type": "aether_reply", "title": "Please type something for me to respond to!"}],
         }
 
     # tone switching
@@ -243,7 +243,7 @@ def handle_intent(intent: str, tone: str, user_message: str):
     if not tone:
         tone = get_mode()
 
-    print(f"🧩 Intent: {intent} | Tone: {tone}")
+    print(f"Intent: {intent} | Tone: {tone}")
 
     remember_query(user_message)
 
@@ -255,7 +255,7 @@ def handle_intent(intent: str, tone: str, user_message: str):
     else:
         refined_message = refine_search_query(user_message)
 
-    print(f"✨ Refined topic: {refined_message}")
+    print(f"Refined topic: {refined_message}")
 
     # -----------------------------------------------------------
     # PAGINATION ("more")
@@ -265,7 +265,7 @@ def handle_intent(intent: str, tone: str, user_message: str):
         if not last_query:
             return {
                 "status": "success",
-                "results": [{"source_type": "aether_reply", "title": "⚠️ No previous topic to expand."}],
+                "results": [{"source_type": "aether_reply", "title": "No previous topic to expand."}],
             }
 
         source = intent.replace("_more", "")
@@ -305,7 +305,7 @@ def handle_intent(intent: str, tone: str, user_message: str):
         reddit_final = score_relevance(reddit_list, refined_message)[:5]
         yt_final = score_relevance(yt_list, refined_message)[:5]
 
-        # 🚨 FIX: Briefing **only when user didn't explicitly mention reddit OR youtube**
+        # FIX: Briefing **only when user didn't explicitly mention reddit OR youtube**
         show_briefing = not any(
             w in lower_msg for w in ["reddit", "youtube", "yt", "video", "clip"]
         )

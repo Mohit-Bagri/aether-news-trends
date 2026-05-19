@@ -55,18 +55,18 @@ def infer_continued_query(user_input: str):
     if re.match(r"^(and|what about|continue|more on|tell me about)", query, re.I):
         combined = f"{last_topic} {query}"
         update_memory(combined)
-        print(f"🧠 Continuing context: '{last_topic}' → '{combined}'")
+        print(f"Continuing context: '{last_topic}' → '{combined}'")
         return combined
 
     # --- detect unrelated new topic ---
     overlap = len(set(query.lower().split()) & set(last_topic.lower().split()))
     if overlap == 0:
         update_memory(query)
-        print(f"🧹 New topic detected: '{query}' (reset context)")
+        print(f"New topic detected: '{query}' (reset context)")
         return query
 
     # --- partial overlap = semi-related continuation ---
     combined = f"{last_topic} {query}"
     update_memory(combined)
-    print(f"🔗 Partial continuation: '{combined}'")
+    print(f"Partial continuation: '{combined}'")
     return combined

@@ -11,7 +11,7 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 
 # ---------------------------------------------------------
-# 🔹 MAIN LLM RESPONSE GENERATOR (supports resume)
+# MAIN LLM RESPONSE GENERATOR (supports resume)
 # ---------------------------------------------------------
 def generate_llm_response(
     intent, tone, user_input, prefix=None, remaining=None, resume=False
@@ -22,7 +22,7 @@ def generate_llm_response(
     """
 
     # -----------------------------------------------------
-    # 🔥 1. HANDLE RESUME CONTINUATION FIRST
+    # 1. HANDLE RESUME CONTINUATION FIRST
     # -----------------------------------------------------
     if resume:
         # remaining is what frontend saved during typewriter
@@ -35,7 +35,7 @@ def generate_llm_response(
         }
 
     # -----------------------------------------------------
-    # 🔥 2. NORMAL GENERATION (NO RESUME)
+    # 2. NORMAL GENERATION (NO RESUME)
     # -----------------------------------------------------
     if not OPENAI_API_KEY:
         return {
@@ -43,7 +43,7 @@ def generate_llm_response(
             "results": [
                 {
                     "source_type": "aether_reply",
-                    "title": "⚠️ Missing API key. Please check your .env file.",
+                    "title": "Missing API key. Please check your .env file.",
                 }
             ],
         }
@@ -92,16 +92,16 @@ Avoid disclaimers and system-style text.
             )
 
         data = response.json()
-        print("🔥 RAW OPENAI RESPONSE:", data)  # <— DEBUG HERE
+        print("RAW OPENAI RESPONSE:", data)  # <— DEBUG HERE
 
         reply = data["choices"][0]["message"].get("content", "").strip()
 
     except Exception as e:
-        print("❌ OPENAI ERROR:", str(e))
-        reply = f"❌ OpenAI failed: {str(e)}"
+        print("OPENAI ERROR:", str(e))
+        reply = f"OpenAI failed: {str(e)}"
 
     # -----------------------------------------------------
-    # 🔥 3. ENSURE FUNCTION ALWAYS RETURNS VALID STRUCTURE
+    # 3. ENSURE FUNCTION ALWAYS RETURNS VALID STRUCTURE
     # -----------------------------------------------------
     return {
         "status": "success",
@@ -110,7 +110,7 @@ Avoid disclaimers and system-style text.
 
 
 # ---------------------------------------------------------
-# 🎭 TONE DETECTION — FIXED
+# TONE DETECTION — FIXED
 # ---------------------------------------------------------
 def detect_tone_change(user_message: str):
     msg = user_message.lower().strip()
@@ -312,7 +312,7 @@ def detect_tone_change(user_message: str):
 
 
 # ---------------------------------------------------------
-# 🧭 Query Refinement — unchanged
+# Query Refinement — unchanged
 # ---------------------------------------------------------
 def refine_search_query(raw_query: str):
     if not OPENAI_API_KEY:

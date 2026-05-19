@@ -52,5 +52,5 @@ def clean_news_data(input_path, custom_output=None):
     # Save cleaned file
     df.to_csv(output_path, index=False)
 
-    print(f"🧹 Cleaned news data saved to: {output_path} ({len(df)} rows)")
+    print(f"Cleaned news data saved to: {output_path} ({len(df)} rows)")
     return output_path

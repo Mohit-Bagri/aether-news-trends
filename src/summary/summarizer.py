@@ -136,7 +136,7 @@ def summarize_results(news_list=None, reddit_list=None, youtube_list=None, tone=
     description = (
         "**Aether's Briefing**\n\n"
         + "\n".join(bullet_lines)
-        + "\n\n✨ **Aether's Take:**\n"
+        + "\n\nAether's Take:\n"
         + take_final
     ).strip()
 

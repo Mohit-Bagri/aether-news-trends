@@ -261,7 +261,7 @@ body {
   background: linear-gradient(90deg, #4CA8FF, #7DB9FF, #4CA8FF);
   background-size: 200% 100%;
   
-  /* ✅ Standard + vendor-prefixed for full compatibility */
+  /* Standard + vendor-prefixed for full compatibility */
   background-clip: text;
   -webkit-background-clip: text;
   
@@ -567,12 +567,12 @@ input:-internal-autofill-selected {
   flex-shrink: 0;
   transform: translateY(1px);
   transition: transform 0.25s ease, filter 0.25s ease;
-  margin-right: 0; /* ✅ remove extra space */
+  margin-right: 0; /* remove extra space */
 }
 .section-header {
   display: flex;
   align-items: center;
-  gap: 4px; /* ✅ was 6px — tighter alignment */
+  gap: 4px; /* was 6px — tighter alignment */
   margin-bottom: 8px;
   font-weight: 600;
   color: #e6e2ff;

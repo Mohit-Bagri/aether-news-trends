@@ -85,18 +85,18 @@ def fetch_news(topic="news", max_articles=20):
     - No quotes or split-word garbage
     """
     try:
-        print(f"📰 Fetching News for '{topic}'...")
+        print(f"Fetching News for '{topic}'...")
 
-        # 🔥 SAFETY: remove quotes that break NewsAPI
+        # SAFETY: remove quotes that break NewsAPI
         topic = topic.replace('"', '').replace("'", "").strip()
-        print(f"🔍 Cleaned topic for news: {topic}")
+        print(f"Cleaned topic for news: {topic}")
 
         today = datetime.now(timezone.utc)
         week_ago = today - timedelta(days=7)
 
         out = []
 
-        # 🔥 VERY IMPORTANT: use ONLY ONE variant
+        # VERY IMPORTANT: use ONLY ONE variant
         topic_variants = [topic]
 
         # === NEWSAPI FIRST ===
@@ -116,10 +116,10 @@ def fetch_news(topic="news", max_articles=20):
 
                 try:
                     r = requests.get(url, params=params, timeout=10)
-                    print(f"🛰️ NewsAPI HTTP {r.status_code} for '{variant}'")
+                    print(f"NewsAPI HTTP {r.status_code} for '{variant}'")
                     data = r.json()
                 except Exception as e:
-                    print(f"❌ NewsAPI request failed for '{variant}': {e}")
+                    print(f"NewsAPI request failed for '{variant}': {e}")
                     continue
 
                 # skip invalid responses
@@ -183,7 +183,7 @@ def fetch_news(topic="news", max_articles=20):
                     r = requests.get(gurl, params=params, timeout=10)
                     data = r.json()
                 except Exception as e:
-                    print(f"❌ GNews request failed for '{variant}': {e}")
+                    print(f"GNews request failed for '{variant}': {e}")
                     continue
 
                 for art in data.get("articles", []):
@@ -213,9 +213,9 @@ def fetch_news(topic="news", max_articles=20):
                 if len(out) >= max_articles:
                     break
 
-        print(f"✅ News fetched: {len(out)} items")
+        print(f"News fetched: {len(out)} items")
         return out
 
     except Exception as e:
-        print(f"❌ fetch_news error: {e}")
+        print(f"fetch_news error: {e}")
         return []

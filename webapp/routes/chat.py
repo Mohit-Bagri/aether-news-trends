@@ -33,7 +33,7 @@ def chat():
         # === SHOW MORE (append) handling ===
         if data.get("append"):
             topic_type = data.get("type", "news")
-            print(f"🔁 [APPEND REQUEST] Loading more {topic_type}...")
+            print(f"[APPEND REQUEST] Loading more {topic_type}...")
 
             from src.data_ingest import fetch_news, fetch_youtube, fetch_reddit
             try:
@@ -46,31 +46,31 @@ def chat():
                 else:
                     results = []
 
-                print(f"✅ Successfully fetched {len(results)} {topic_type} results (append).")
+                print(f"Successfully fetched {len(results)} {topic_type} results (append).")
                 return jsonify({"status": "success", "results": results}), 200
 
             except Exception as err:
-                print(f"⚠️ Error fetching more {topic_type}: {err}")
+                print(f"Error fetching more {topic_type}: {err}")
                 return jsonify({
                     "status": "error",
                     "results": [
                         {
                             "source_type": "aether_reply",
-                            "title": f"⚠️ Couldn’t load more {topic_type}."
+                            "title": f"Couldn’t load more {topic_type}."
                         }
                     ]
                 }), 200
 
         # === STANDARD / RESUME CHAT FLOW ===
-        print(f"🗣️ User said: {user_message} | resume={resume}")
+        print(f"User said: {user_message} | resume={resume}")
 
         intent = detect_intent(user_message)
         tone = get_mode()
-        print(f"🧩 Intent: {intent} | Tone: {tone}")
+        print(f"Intent: {intent} | Tone: {tone}")
 
         # === RESUME HANDLING (Option 1) ===
         if resume:
-            print(f"⏩ Resume request — prefix={len(prefix)} remaining={len(remaining)}")
+            print(f"Resume request — prefix={len(prefix)} remaining={len(remaining)}")
 
             # If remaining exists → return continuation ONLY
             if remaining:
@@ -93,12 +93,12 @@ def chat():
 
         # === NORMAL FIRST-TIME CALL ===
         response_data = handle_intent(intent, tone, user_message)
-        print(f"🤖 Response generated: {response_data}")
+        print(f"Response generated: {response_data}")
         response_data["resume"] = False
         return jsonify(response_data), 200
 
     except Exception as e:
-        print(f"❌ Error in chat route: {e}")
+        print(f"Error in chat route: {e}")
         return jsonify({
             "status": "error",
             "results": [
@@ -114,5 +114,5 @@ def chat():
 @chat_bp.route("/chat_event", methods=["POST"])
 def chat_event():
     data = request.get_json(silent=True) or {}
-    print(f"🟣 [CHAT EVENT] {data}")
+    print(f"[CHAT EVENT] {data}")
     return ("", 204)
